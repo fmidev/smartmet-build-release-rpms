@@ -13,12 +13,12 @@ jobs:
           command: sudo yum install -y smartmet-utils-devel
       - run:
           name: Create build configuration
-          command: ./smartbuild --add-module smartmet-library-macgyver --dump-config >smartbuild.json
+          command: smartbuild --add-module smartmet-library-macgyver --dump-config >smartbuild.json
       - run:
           name: Create local mirrors of smartmet repos (open sources only)
-          command: ./smartbuild --config smartbuild.json --create-workspace --recursive --update
+          command: smartbuild --config smartbuild.json --create-workspace --recursive --update
       - run:
-          command: ./smartbuild --config smartbuild.json --builddep --recursive --local --release-rpms
+          command: smartbuild --config smartbuild.json --builddep --recursive --local --release-rpms
       - persist_to_workspace:
           root: /dist
           paths: ./workspace/export/*
