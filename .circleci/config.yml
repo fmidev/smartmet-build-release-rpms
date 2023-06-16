@@ -19,10 +19,10 @@ jobs:
           command: smartbuild --config smartbuild.json --recursive --update --https
       - run:
           command: smartbuild --config smartbuild.json --builddep --recursive --local --release-rpms --separate-logs
-      - store-artifacts:
+      - store_artifacts:
           path: ./workspace/export/*
           destination: built-rhel8-rpms
-      - store-artifacts:
+      - store_artifacts:
           path: ./workspace/log/*
           destination: rhel8-build-logs
 workflows:
