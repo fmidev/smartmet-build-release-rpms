@@ -13,20 +13,43 @@ jobs:
           command: sudo yum install -y smartmet-utils-devel
       - run:
           name: Create build configuration
-          command: smartbuild --create-workspace --add-module smartmet-library-macgyver --dump-config >smartbuild.json
+          command: |
+               smartbuild --create-workspace --default-config --dump-config >smartbuild.json
       - run:
           name: Create local mirrors of smartmet repos (open sources only)
           command: smartbuild --config smartbuild.json --recursive --update --https
       - run:
+          name: Build new release RPMs
           command: smartbuild --config smartbuild.json --builddep --recursive --local --release-rpms --separate-logs
+      - persist_to_workspace:
+          root: /dist
+          paths: ./workspace/export/*
       - store_artifacts:
-          path: ./workspace/export/*
-          destination: built-rhel8-rpms
-      - store_artifacts:
-          path: ./workspace/log/*
-          destination: rhel8-build-logs
+          path: ./workspace/log
+  upload-rhel8:
+    docker:
+      - image: fmidev/smartmet-cibase-8:latest
+    steps:
+      - attach_workspace:
+          at: /dist
+      - run:
+          name: Installing AWS CLI
+          working_directory: /
+          command: |
+            sudo yum -y install dnf
+            sudo dnf -y install python3-pip
+            pip3 install awscli --upgrade --user
+      - run:
+          name: Sync artifacts to S3
+          command: |
+            export PATH=$PATH:~/.local/bin
+            aws s3 cp /dist s3://fmi-smartmet-cicd-beta/release-rpms/ --recursive
 workflows:
   version: 2.1
   build-test:
     jobs:
       - build-rhel8
+      - upload-rhel8:
+          context: fmi-global
+          requires:
+            - test-rhel8
