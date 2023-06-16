@@ -21,11 +21,11 @@ jobs:
       - run:
           name: Build new release RPMs
           command: smartbuild --config smartbuild.json --builddep --recursive --local --release-rpms --separate-logs
-      - persist_to_workspace:
-          root: /dist
-          paths: ./workspace/export/*
       - store_artifacts:
           path: ./workspace/log
+      - persist_to_workspace:
+          root: /dist
+          path: ./workspace/export/*
   upload-rhel8:
     docker:
       - image: fmidev/smartmet-cibase-8:latest
