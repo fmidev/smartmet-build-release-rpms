@@ -20,7 +20,10 @@ jobs:
           command: smartbuild --config smartbuild.json --recursive --update --https
       - run:
           name: Build new release RPMs
-          command: smartbuild --config smartbuild.json --builddep --recursive --local --release-rpms --separate-logs
+          command: |
+             smartbuild --config smartbuild.json --builddep --recursive --local --release-rpms --separate-logs
+             ls -lR workspace/export
+             ls -lR workspace/log
       - store_artifacts:
           path: ./workspace/log
       - persist_to_workspace:
