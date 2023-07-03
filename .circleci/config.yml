@@ -22,6 +22,7 @@ jobs:
           name: Build new release RPMs
           command: |
              mkdir -p export/smartmet-open/rhel/8/beta export/log
+             echo "" >/export/smartmet-open/dummy
              smartbuild --config smartbuild.json --builddep --recursive --local --release-rpms --separate-logs
       - store_artifacts:
           path: ./workspace/log
@@ -45,7 +46,7 @@ jobs:
           name: Sync artifacts to S3
           command: |
             export PATH=$PATH:~/.local/bin
-            aws s3 cp /dist s3://fmi-smartmet-cicd-beta/release-rpms/ --recursive
+            aws s3 cp /dist s3://fmi-smartmet-cicd-beta/release-rpms/ --recursive --exclude '*' --include '*.rpm'
 workflows:
   version: 2.1
   build-test:
