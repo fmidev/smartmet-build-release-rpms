@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   build-rhel8:
     docker:
-      - image: fmidev/smartmet-cibase-8:latest
+      - image: fmidev/smartmet-cibase-9:latest
     resource_class: xlarge
     environment:
       RPM_BUILD_NCPUS: 8
