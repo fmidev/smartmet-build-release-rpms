@@ -21,39 +21,20 @@ jobs:
       - run:
           name: Build new release RPMs
           command: |
-             pwd
-             ls -l
-             mkdir -p workspace/export/smartmet-open/rhel/8/beta workspace/export/log
+             mkdir -p workspace/export/smartmet-open/rhel/8/beta workspace/log
              smartbuild --config smartbuild.json --builddep --recursive --local --release-rpms --separate-logs
+      - run:
+          name: Archive newly built RPM packages and build/install related log files
+          command: |
+             tar cvf built-packages.tar -C workspace/export $(cd workspace/export && ls -1b *.log)
+             tar cJvf logs-files.tar.xz -C workspace/log $(cd workspace/log && ls -1b *.log)
       - store_artifacts:
-          path: ./workspace/log
-      - persist_to_workspace:
-          root: /dist
-          path: ./workspace/export/*
-  upload-rhel8:
-    docker:
-      - image: fmidev/smartmet-cibase-8:latest
-    steps:
-      - attach_workspace:
-          at: /dist
-      - run:
-          name: Installing AWS CLI
-          working_directory: /
-          command: |
-            sudo yum -y install dnf
-            sudo dnf -y install python3-pip
-            pip3 install awscli --upgrade --user
-      - run:
-          name: Sync artifacts to S3
-          command: |
-            export PATH=$PATH:~/.local/bin
-            aws s3 cp /dist s3://fmi-smartmet-cicd-beta/release-rpms/ --recursive --exclude '*' --include '*.rpm'
+          path: built-packages.tar
+      - store_artifacts:
+          path: logs-files.tar.xz
+
 workflows:
   version: 2.1
   build-test:
     jobs:
       - build-rhel8
-      - upload-rhel8:
-          context: fmi-global
-          requires:
-            - build-rhel8
