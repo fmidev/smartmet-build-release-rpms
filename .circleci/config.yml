@@ -21,8 +21,9 @@ jobs:
       - run:
           name: Build new release RPMs
           command: |
-             mkdir -p export/smartmet-open/rhel/8/beta export/log
-             echo "" >export/smartmet-open/dummy
+             pwd
+             ls -l
+             mkdir -p workspace/export/smartmet-open/rhel/8/beta workspace/export/log
              smartbuild --config smartbuild.json --builddep --recursive --local --release-rpms --separate-logs
       - store_artifacts:
           path: ./workspace/log
