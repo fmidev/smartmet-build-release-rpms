@@ -1,5 +1,71 @@
 version: 2.1
 jobs:
+  build-rhel7:
+    docker:
+      - image: fmidev/smartmet-cibase-7:latest
+    resource_class: xlarge
+    environment:
+      RPM_BUILD_NCPUS: 8
+    steps:
+      - checkout
+      - run:
+          name: Install smartmet-utils-devel
+          command: sudo yum install -y smartmet-utils-devel
+      - run:
+          name: Create build configuration
+          command: |
+               smartbuild --create-workspace --default-config --remove-module smartmet-plugin-edr --dump-config >smartbuild.json
+      - run:
+          name: Create local mirrors of smartmet repos (open sources only)
+          command: smartbuild --config smartbuild.json --recursive --update --https
+      - run:
+          name: Build new release RPMs
+          command: |
+             mkdir -p workspace/export/smartmet-open/rhel/7/beta workspace/log
+             smartbuild --config smartbuild.json --builddep --recursive --local --release-rpms --separate-logs
+      - run:
+          name: Archive newly built RPM packages and build/install related log files
+          command: |
+             ( cd workspace/export && tar cvf ../../new-rhel9-release-rpms-$(date +%Y%m%d_%H%M).tar *
+             ( cd workspace/log && tar cJvf ../../build-logs-files-$(date +%Y%m%d_%H%M).tar.xz *
+          when: always
+      - store_artifacts:
+          path: built-packages.tar
+      - store_artifacts:
+          path: logs-files.tar.xz
+  build-rhel8:
+    docker:
+      - image: fmidev/smartmet-cibase-8:latest
+    resource_class: xlarge
+    environment:
+      RPM_BUILD_NCPUS: 8
+    steps:
+      - checkout
+      - run:
+          name: Install smartmet-utils-devel
+          command: sudo yum install -y smartmet-utils-devel
+      - run:
+          name: Create build configuration
+          command: |
+               smartbuild --create-workspace --default-config --remove-module smartmet-plugin-edr --dump-config >smartbuild.json
+      - run:
+          name: Create local mirrors of smartmet repos (open sources only)
+          command: smartbuild --config smartbuild.json --recursive --update --https
+      - run:
+          name: Build new release RPMs
+          command: |
+             mkdir -p workspace/export/smartmet-open/rhel//beta workspace/log
+             smartbuild --config smartbuild.json --builddep --recursive --local --release-rpms --separate-logs
+      - run:
+          name: Archive newly built RPM packages and build/install related log files
+          command: |
+             ( cd workspace/export && tar cvf ../../built-packages.tar *)
+             ( cd workspace/log && tar cJvf ../../logs-files.tar.xz *)
+          when: always
+      - store_artifacts:
+          path: built-packages.tar
+      - store_artifacts:
+          path: logs-files.tar.xz
   build-rhel9:
     docker:
       - image: fmidev/smartmet-cibase-9:latest
@@ -28,6 +94,7 @@ jobs:
           command: |
              ( cd workspace/export && tar cvf ../../built-packages.tar *)
              ( cd workspace/log && tar cJvf ../../logs-files.tar.xz *)
+          when: always
       - store_artifacts:
           path: built-packages.tar
       - store_artifacts:
@@ -36,5 +103,12 @@ jobs:
 workflows:
   version: 2.1
   build-test:
+    setup:
+        when:
+            and:
+               - equal [ scheduled_pipeline, << pipeline.trigger_source >> ]
+               - equal [ "release-rpm-build", << pipeline.schedule.name >> ]
     jobs:
+      - build-rhel7
+      - build-rhel8
       - build-rhel9
