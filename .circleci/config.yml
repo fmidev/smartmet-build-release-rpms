@@ -26,11 +26,7 @@ jobs:
       - run:
           name: Archive newly built RPM packages and build/install related log files
           command: |
-             du
-             ls -l workspace
-             ls -lR workspace/export
-             ls -l workspace/log
-             tar cvf built-packages.tar -C workspace/export $(cd workspace/export && ls -1b *.log)
+             tar cvf built-packages.tar -C workspace/export $(cd workspace/export && ls -1b smartmet*)
              tar cJvf logs-files.tar.xz -C workspace/log $(cd workspace/log && ls -1b *.log)
       - store_artifacts:
           path: built-packages.tar
