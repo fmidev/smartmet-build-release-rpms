@@ -103,11 +103,10 @@ jobs:
 workflows:
   version: 2.1
   build-test:
-    setup:
-        when:
-            and:
-               - equal [ scheduled_pipeline, << pipeline.trigger_source >> ]
-               - equal [ "release-rpm-build", << pipeline.schedule.name >> ]
+    when:
+        and:
+          - equal [ scheduled_pipeline, << pipeline.trigger_source >> ]
+          - equal [ "release-rpm-build", << pipeline.schedule.name >> ]
     jobs:
       - build-rhel7
       - build-rhel8
