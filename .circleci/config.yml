@@ -10,7 +10,9 @@ jobs:
       - checkout
       - run:
           name: Install smartmet-utils-devel
-          command: sudo yum install -y smartmet-utils-devel
+          command: |
+               sudo yum install -y smartmet-utils-devel
+               sudo yum upgrade -y git
       - run:
           name: Create build configuration
           command: |
@@ -26,8 +28,8 @@ jobs:
       - run:
           name: Archive newly built RPM packages and build/install related log files
           command: |
-             ( cd workspace/export && tar cvf ../../new-rhel9-release-rpms-$(date +%Y%m%d_%H%M).tar *
-             ( cd workspace/log && tar cJvf ../../build-logs-files-$(date +%Y%m%d_%H%M).tar.xz *
+             ( cd workspace/export && tar cvf ../../new-rhel7-release-rpms-$(date +%Y%m%d_%H%M).tar * )
+             ( cd workspace/log && tar cJvf ../../build-logs-files-$(date +%Y%m%d_%H%M).tar.xz * )
           when: always
       - store_artifacts:
           path: built-packages.tar
@@ -59,8 +61,8 @@ jobs:
       - run:
           name: Archive newly built RPM packages and build/install related log files
           command: |
-             ( cd workspace/export && tar cvf ../../built-packages.tar *)
-             ( cd workspace/log && tar cJvf ../../logs-files.tar.xz *)
+             ( cd workspace/export && tar cvf ../../new-rhel8-release-rpms-$(date +%Y%m%d_%H%M).tar *)
+             ( cd workspace/log && tar cJvf ../../build-logs-files-$(date +%Y%m%d_%H%M).tar.xz *)
           when: always
       - store_artifacts:
           path: built-packages.tar
@@ -92,8 +94,8 @@ jobs:
       - run:
           name: Archive newly built RPM packages and build/install related log files
           command: |
-             ( cd workspace/export && tar cvf ../../built-packages.tar *)
-             ( cd workspace/log && tar cJvf ../../logs-files.tar.xz *)
+             ( cd workspace/export && tar cvf ../../new-rhel9-release-rpms-$(date +%Y%m%d_%H%M).tar *)
+             ( cd workspace/log && tar cJvf ../../build-logs-files-$(date +%Y%m%d_%H%M).tar.xz *)
           when: always
       - store_artifacts:
           path: built-packages.tar
