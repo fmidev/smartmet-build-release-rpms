@@ -32,9 +32,9 @@ jobs:
              ( cd workspace/log && tar cJvf ../../build-logs-files-$(date +%Y%m%d_%H%M).tar.xz * )
           when: always
       - store_artifacts:
-          path: built-packages.tar
+          path: new-rhel7-release-rpms-*.tar
       - store_artifacts:
-          path: logs-files.tar.xz
+          path: build-logs-files*.tar.xz
   build-rhel8:
     docker:
       - image: fmidev/smartmet-cibase-8:latest
@@ -65,9 +65,9 @@ jobs:
              ( cd workspace/log && tar cJvf ../../build-logs-files-$(date +%Y%m%d_%H%M).tar.xz *)
           when: always
       - store_artifacts:
-          path: built-packages.tar
+          path: new-rhel8-release-rpms-*.tar
       - store_artifacts:
-          path: logs-files.tar.xz
+          path: build-logs-files*.tar.xz
   build-rhel9:
     docker:
       - image: fmidev/smartmet-cibase-9:latest
@@ -98,9 +98,9 @@ jobs:
              ( cd workspace/log && tar cJvf ../../build-logs-files-$(date +%Y%m%d_%H%M).tar.xz *)
           when: always
       - store_artifacts:
-          path: built-packages.tar
+          path: new-rhel9-release-rpms-*.tar
       - store_artifacts:
-          path: logs-files.tar.xz
+          path: build-logs-files*.tar.xz
 
 workflows:
   version: 2.1
