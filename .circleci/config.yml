@@ -35,7 +35,7 @@ jobs:
              ls -l artifacts
           when: always
       - store_artifacts:
-          path: artifacts/*
+          path: artifacts
   build-rhel8:
     docker:
       - image: fmidev/smartmet-cibase-8:latest
@@ -69,7 +69,7 @@ jobs:
              ls -l artifacts
           when: always
       - store_artifacts:
-          path: artifacts/*
+          path: artifacts
   build-rhel9:
     docker:
       - image: fmidev/smartmet-cibase-9:latest
@@ -103,7 +103,7 @@ jobs:
              ls -l artifacts
           when: always
       - store_artifacts:
-          path: artifacts/*
+          path: artifacts
 
 workflows:
   version: 2.1
