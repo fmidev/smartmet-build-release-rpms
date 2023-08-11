@@ -28,13 +28,14 @@ jobs:
       - run:
           name: Archive newly built RPM packages and build/install related log files
           command: |
-             ( cd workspace/export && tar cvf ../../new-rhel7-release-rpms-$(date +%Y%m%d_%H%M).tar * )
-             ( cd workspace/log && tar cJvf ../../build-logs-files-$(date +%Y%m%d_%H%M).tar.xz * )
+             ( cd workspace/export && tar cvf new-rhel7-release-rpms-$(date +%Y%m%d_%H%M).tar * )
+             ( cd workspace/log && tar cJvf build-logs-files-$(date +%Y%m%d_%H%M).tar.xz * )
+             mkdir -p artifacts
+             mv -v workspace/export/*.tar workspace/log/*.tar.xz artifacts/
+             ls -l artifacts
           when: always
       - store_artifacts:
-          path: new-rhel7-release-rpms-*.tar
-      - store_artifacts:
-          path: build-logs-files*.tar.xz
+          path: artifacts/*
   build-rhel8:
     docker:
       - image: fmidev/smartmet-cibase-8:latest
@@ -61,13 +62,14 @@ jobs:
       - run:
           name: Archive newly built RPM packages and build/install related log files
           command: |
-             ( cd workspace/export && tar cvf ../../new-rhel8-release-rpms-$(date +%Y%m%d_%H%M).tar *)
-             ( cd workspace/log && tar cJvf ../../build-logs-files-$(date +%Y%m%d_%H%M).tar.xz *)
+             ( cd workspace/export && tar cvf new-rhel8-release-rpms-$(date +%Y%m%d_%H%M).tar *)
+             ( cd workspace/log && tar cJvf build-logs-files-$(date +%Y%m%d_%H%M).tar.xz *)
+             mkdir -p artifacts
+             mv -v workspace/export/*.tar workspace/log/*.tar.xz artifacts/
+             ls -l artifacts
           when: always
       - store_artifacts:
-          path: new-rhel8-release-rpms-*.tar
-      - store_artifacts:
-          path: build-logs-files*.tar.xz
+          path: artifacts/*
   build-rhel9:
     docker:
       - image: fmidev/smartmet-cibase-9:latest
@@ -94,17 +96,18 @@ jobs:
       - run:
           name: Archive newly built RPM packages and build/install related log files
           command: |
-             ( cd workspace/export && tar cvf ../../new-rhel9-release-rpms-$(date +%Y%m%d_%H%M).tar *)
-             ( cd workspace/log && tar cJvf ../../build-logs-files-$(date +%Y%m%d_%H%M).tar.xz *)
+             ( cd workspace/export && tar cvf new-rhel9-release-rpms-$(date +%Y%m%d_%H%M).tar *)
+             ( cd workspace/log && tar cJvf build-logs-files-$(date +%Y%m%d_%H%M).tar.xz *)
+             mkdir -p artifacts
+             mv -v workspace/export/*.tar workspace/log/*.tar.xz artifacts/
+             ls -l artifacts
           when: always
       - store_artifacts:
-          path: new-rhel9-release-rpms-*.tar
-      - store_artifacts:
-          path: build-logs-files*.tar.xz
+          path: artifacts/*
 
 workflows:
   version: 2.1
-  build-test:
+  build-release-rpms:
     when:
         and:
           - equal [ scheduled_pipeline, << pipeline.trigger_source >> ]
