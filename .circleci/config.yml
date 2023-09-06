@@ -16,7 +16,7 @@ jobs:
       - run:
           name: Create build configuration
           command: |
-               smartbuild --create-workspace --default-config --remove-module smartmet-plugin-edr --dump-config >smartbuild.json
+               smartbuild --create-workspace --default-config --dump-config >smartbuild.json
       - run:
           name: Create local mirrors of smartmet repos (open sources only)
           command: smartbuild --config smartbuild.json --recursive --update --https
@@ -50,7 +50,7 @@ jobs:
       - run:
           name: Create build configuration
           command: |
-               smartbuild --create-workspace --default-config --remove-module smartmet-plugin-edr --dump-config >smartbuild.json
+               smartbuild --create-workspace --default-config --dump-config >smartbuild.json
       - run:
           name: Create local mirrors of smartmet repos (open sources only)
           command: smartbuild --config smartbuild.json --recursive --update --https
@@ -84,7 +84,7 @@ jobs:
       - run:
           name: Create build configuration
           command: |
-               smartbuild --create-workspace --default-config --remove-module smartmet-plugin-edr --dump-config >smartbuild.json
+               smartbuild --create-workspace --default-config --dump-config >smartbuild.json
       - run:
           name: Create local mirrors of smartmet repos (open sources only)
           command: smartbuild --config smartbuild.json --recursive --update --https
@@ -106,7 +106,6 @@ jobs:
           path: artifacts
 
 workflows:
-  version: 2.1
   build-release-rpms:
     when:
         and:
