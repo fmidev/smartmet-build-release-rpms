@@ -27,12 +27,7 @@ jobs:
              smartbuild --config smartbuild.json --builddep --recursive --local --release-rpms --separate-logs
       - run:
           name: Archive newly built RPM packages and build/install related log files
-          command: |
-             ( cd workspace/export && tar cvf new-rhel7-release-rpms-$(date +%Y%m%d_%H%M).tar * )
-             ( cd workspace/log && tar cJvf rhel7-build-logs-$(date +%Y%m%d_%H%M).tar.xz * )
-             mkdir -p artifacts
-             mv -v workspace/export/*.tar workspace/log/*.tar.xz artifacts/
-             ls -l artifacts
+          command: ./archive-files.sh
           when: always
       - store_artifacts:
           path: artifacts
@@ -61,12 +56,7 @@ jobs:
              smartbuild --config smartbuild.json --builddep --recursive --local --release-rpms --separate-logs
       - run:
           name: Archive newly built RPM packages and build/install related log files
-          command: |
-             ( cd workspace/export && tar cvf new-rhel8-release-rpms-$(date +%Y%m%d_%H%M).tar *)
-             ( cd workspace/log && tar cJvf rhel8-build-logs-$(date +%Y%m%d_%H%M).tar.xz *)
-             mkdir -p artifacts
-             mv -v workspace/export/*.tar workspace/log/*.tar.xz artifacts/
-             ls -l artifacts
+          command: ./archive-files.sh
           when: always
       - store_artifacts:
           path: artifacts
@@ -95,12 +85,7 @@ jobs:
              smartbuild --config smartbuild.json --builddep --recursive --local --release-rpms --separate-logs
       - run:
           name: Archive newly built RPM packages and build/install related log files
-          command: |
-             ( cd workspace/export && tar cvf new-rhel9-release-rpms-$(date +%Y%m%d_%H%M).tar *)
-             ( cd workspace/log && tar cJvf rhel9-build-logs-$(date +%Y%m%d_%H%M).tar.xz *)
-             mkdir -p artifacts
-             mv -v workspace/export/*.tar workspace/log/*.tar.xz artifacts/
-             ls -l artifacts
+          command: ./archive-files.sh
           when: always
       - store_artifacts:
           path: artifacts
