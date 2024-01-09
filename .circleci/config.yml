@@ -89,6 +89,11 @@ jobs:
           when: always
       - store_artifacts:
           path: artifacts
+      - run:
+          name: Upload RPMs for download.fmi.fi
+          command: |
+             find workspace/smartmet-open/rhel/9/debug -name '*.rpm' -exec curl --show-error -u $USER:$PASS -F file=@{} $RHEL9_DEBUG_UPLOAD_HOST \;
+             find workspace/smartmet-open/rhel/9/x86_64 -name '*.rpm' -exec curl --show-error -u $USER:$PASS -F file=@{} $RHEL9_X86_UPLOAD_HOST \;
 
 workflows:
   build-release-rpms:
