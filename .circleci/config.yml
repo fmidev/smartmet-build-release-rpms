@@ -63,7 +63,7 @@ jobs:
       - run:
           name: Upload RPMs for download.fmi.fi
           command: |
-             test -d workspace/export/smartmet-open/rhel/8/beta -name && \
+             test -d workspace/export/smartmet-open/rhel/8/beta && \
                   find workspace/export/smartmet-open/rhel/8/beta -name '*.rpm' -exec curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@{} https://$RHEL8_BETA_UPLOAD_HOST/api/upload \;
   build-rhel9:
     docker:
@@ -99,7 +99,7 @@ jobs:
           command: |
              test -d workspace/export/smartmet-open/rhel/9/debug && \
                   find workspace/export/smartmet-open/rhel/9/debug -name '*.rpm' -exec curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@{} https://$RHEL9_DEBUG_UPLOAD_HOST/api/upload \;
-             test workspace/export/smartmet-open/rhel/9/x86_64 && \
+             test -d workspace/export/smartmet-open/rhel/9/x86_64 && \
                   find workspace/export/smartmet-open/rhel/9/x86_64 -name '*.rpm' -exec curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@{} https://$RHEL9_X86_UPLOAD_HOST/api/upload \;
 
 workflows:
