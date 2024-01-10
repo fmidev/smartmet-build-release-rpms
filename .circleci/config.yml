@@ -60,6 +60,11 @@ jobs:
           when: always
       - store_artifacts:
           path: artifacts
+      - run:
+          name: Upload RPMs for download.fmi.fi
+          command: |
+             test -d workspace/export/smartmet-open/rhel/8/beta -name && \
+                  find workspace/export/smartmet-open/rhel/8/beta -name '*.rpm' -exec curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@{} https://$RHEL8_BETA_UPLOAD_HOST/api/upload \;
   build-rhel9:
     docker:
       - image: fmidev/smartmet-cibase-9:latest
@@ -92,8 +97,10 @@ jobs:
       - run:
           name: Upload RPMs for download.fmi.fi
           command: |
-             find workspace/export/smartmet-open/rhel/9/debug -name '*.rpm' -exec curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@{} https://$RHEL9_DEBUG_UPLOAD_HOST \;
-             find workspace/export/smartmet-open/rhel/9/x86_64 -name '*.rpm' -exec curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@{} https://$RHEL9_X86_UPLOAD_HOST \;
+             test -d workspace/export/smartmet-open/rhel/9/debug && \
+                  find workspace/export/smartmet-open/rhel/9/debug -name '*.rpm' -exec curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@{} https://$RHEL9_DEBUG_UPLOAD_HOST/api/upload \;
+             test workspace/export/smartmet-open/rhel/9/x86_64 && \
+                  find workspace/export/smartmet-open/rhel/9/x86_64 -name '*.rpm' -exec curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@{} https://$RHEL9_X86_UPLOAD_HOST/api/upload \;
 
 workflows:
   build-release-rpms:
