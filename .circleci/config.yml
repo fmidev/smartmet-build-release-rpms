@@ -63,8 +63,14 @@ jobs:
       - run:
           name: Upload RPMs for download.fmi.fi
           command: |
-             test -d workspace/export/smartmet-open/rhel/8/beta && \
-                  find workspace/export/smartmet-open/rhel/8/beta -name '*.rpm' -exec curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@{} https://$RHEL8_BETA_UPLOAD_HOST/api/upload \;
+             ok=true;
+             if test -d workspace/export/smartmet-open/rhel/8/beta ; then
+                  for rpm in $(find workspace/export/smartmet-open/rhel/8/beta -name '*.rpm'); do
+                      curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@$rpm https://$RHEL8_BETA_UPLOAD_HOST/api/upload \; || ok=false
+                  done
+             fi
+             $ok
+
   build-rhel9:
     docker:
       - image: fmidev/smartmet-cibase-9:latest
@@ -97,10 +103,18 @@ jobs:
       - run:
           name: Upload RPMs for download.fmi.fi
           command: |
-             test -d workspace/export/smartmet-open/rhel/9/debug && \
-                  find workspace/export/smartmet-open/rhel/9/debug -name '*.rpm' -exec curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@{} https://$RHEL9_DEBUG_UPLOAD_HOST/api/upload \;
-             test -d workspace/export/smartmet-open/rhel/9/x86_64 && \
-                  find workspace/export/smartmet-open/rhel/9/x86_64 -name '*.rpm' -exec curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@{} https://$RHEL9_X86_UPLOAD_HOST/api/upload \;
+             ok=true;
+             if test -d workspace/export/smartmet-open/rhel/9/debug ; then
+                  for rpm in $(find workspace/export/smartmet-open/rhel/9/debug -name '*.rpm'); do
+                      curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@$rpm https://$RHEL9_DEBUG_UPLOAD_HOST/api/upload \; || ok=false
+                  done
+             fi
+             if test -d workspace/export/smartmet-open/rhel/9/x86_64 ; then
+                  for rpm in $(find workspace/export/smartmet-open/rhel/9/x86_64 -name '*.rpm'); do
+                      curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@$rpm https://$RHEL9_X86_64_UPLOAD_HOST/api/upload \; || ok=false
+                  done
+             fi
+             $ok
 
 workflows:
   build-release-rpms:
