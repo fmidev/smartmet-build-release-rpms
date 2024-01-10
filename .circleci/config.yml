@@ -31,6 +31,17 @@ jobs:
           when: always
       - store_artifacts:
           path: artifacts
+      - run:
+          name: Upload RPMs for download.fmi.fi
+          command: |
+             ok=true;
+             if test -d workspace/export/smartmet-open/rhel/7/beta ; then
+                  for rpm in $(find workspace/export/smartmet-open/rhel/7/beta -name '*.rpm'); do
+                      curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@$rpm https://$RHEL7_BETA_UPLOAD_HOST/api/upload \; || ok=false
+                  done
+             fi
+             $ok
+
   build-rhel8:
     docker:
       - image: fmidev/smartmet-cibase-8:latest
