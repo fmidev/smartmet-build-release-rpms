@@ -1,52 +1,5 @@
 version: 2.1
 jobs:
-  build-rhel7:
-    docker:
-      - image: fmidev/smartmet-cibase-7:latest
-    resource_class: xlarge
-    environment:
-      RPM_BUILD_NCPUS: 8
-    steps:
-      - checkout
-      - run:
-          name: Install smartmet-utils-devel
-          command: |
-               sudo yum install -y smartmet-utils-devel
-               sudo yum upgrade -y git
-      - run:
-          name: Create build configuration
-          command: |
-               smartbuild --create-workspace --default-config --dump-config >smartbuild.json
-      - run:
-          name: Create local mirrors of smartmet repos (open sources only)
-          command: smartbuild --config smartbuild.json --recursive --update --https
-      - run:
-          name: Build new release RPMs
-          command: |
-             mkdir -p workspace/export/smartmet-open/rhel/7 workspace/log
-             smartbuild --config smartbuild.json --builddep --recursive --local --release-rpms --separate-logs
-      - run:
-          name: Archive newly built RPM packages and build/install related log files
-          command: ./archive-files.sh
-          when: always
-      - store_artifacts:
-          path: artifacts
-      - run:
-          name: Upload RPMs for download.fmi.fi
-          command: |
-             ok=true;
-             if test -d workspace/export/smartmet-open/rhel/7/beta ; then
-                  for rpm in $(find workspace/export/smartmet-open/rhel/7/beta -name '*.rpm'); do
-                      if curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@$rpm https://$RHEL7_BETA_UPLOAD_HOST/api/upload ; then
-                          echo "Uploaded $(basename $rpm)";
-                      else
-                          echo "Failed to upload $(basename $rpm)";
-                          ok=false
-                      fi
-                  done
-             fi
-             $ok
-
   build-rhel8:
     docker:
       - image: fmidev/smartmet-cibase-8:latest
@@ -154,6 +107,5 @@ workflows:
           - equal [ scheduled_pipeline, << pipeline.trigger_source >> ]
           - equal [ "release-rpm-build", << pipeline.schedule.name >> ]
     jobs:
-      - build-rhel7
       - build-rhel8
       - build-rhel9
