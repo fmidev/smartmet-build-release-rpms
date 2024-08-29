@@ -60,6 +60,8 @@ jobs:
           name: Create build configuration
           command: |
                smartbuild --create-workspace --default-config --dump-config >smartbuild.json
+               echo "Disable smartmet-open-beta smartmet-open-ext-beta for RHEL9 builds as we do not put pacakges in these repos"
+               sudo dnf config-manager --set-disabled smartmet-open-beta smartmet-open-ext-beta
       - run:
           name: Create local mirrors of smartmet repos (open sources only)
           command: smartbuild --config smartbuild.json --recursive --update --https
