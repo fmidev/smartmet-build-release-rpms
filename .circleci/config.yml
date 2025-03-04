@@ -33,6 +33,9 @@ jobs:
           name: Upload RPMs for download.fmi.fi
           command: |
              ok=true;
+             rpm -qa '*curl*'
+             curl --version
+             ldd /usr/bin/curl
              if test -d workspace/export/smartmet-open/rhel/8/beta ; then
                   for rpm in $(find workspace/export/smartmet-open/rhel/8/beta -name '*.rpm'); do
                       if curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@$rpm https://$RHEL8_BETA_UPLOAD_HOST/api/upload ; then
@@ -78,6 +81,9 @@ jobs:
           name: Upload RPMs for download.fmi.fi
           command: |
              ok=true;
+             rpm -qa '*curl*'
+             curl --version
+             ldd /usr/bin/curl
              if test -d workspace/export/smartmet-open/rhel/9/debug ; then
                   for rpm in $(find workspace/export/smartmet-open/rhel/9/debug -name '*.rpm'); do
                       if curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@$rpm https://$RHEL9_BETA_UPLOAD_HOST/api/upload ; then
