@@ -17,7 +17,7 @@ jobs:
                smartbuild --create-workspace --default-config --dump-config >smartbuild.json
       - run:
           name: Create local mirrors of smartmet repos (open sources only)
-          command: smartbuild --config smartbuild.json --recursive --update --https
+          command: smartbuild --config smartbuild.json --recursive --update --https --branch master:main
       - run:
           name: Build new release RPMs
           command: |
@@ -62,7 +62,7 @@ jobs:
                smartbuild --create-workspace --default-config --dump-config >smartbuild.json
       - run:
           name: Create local mirrors of smartmet repos (open sources only)
-          command: smartbuild --config smartbuild.json --recursive --update --https
+          command: smartbuild --config smartbuild.json --recursive --update --https --branch master:main
       - run:
           name: Build new release RPMs
           command: |
@@ -127,7 +127,7 @@ jobs:
                    smartbuild --create-workspace --default-config --dump-config >smartbuild.json
       - run:
           name: Create local mirrors of smartmet repos (open sources only)
-          command: smartbuild --config smartbuild.json --recursive --update --https
+          command: smartbuild --config smartbuild.json --recursive --update --https --branch master:main
       - run:
           name: Build new release RPMs
           command: |
