@@ -57,10 +57,6 @@ jobs:
           name: Install smartmet-utils-devel
           command: sudo yum install -y smartmet-utils-devel
       - run:
-          name: Create build configuration
-          command: |
-               smartbuild --create-workspace --default-config --dump-config >smartbuild.json
-      - run:
           name: Create local mirrors of smartmet repos (open sources only)
           command: smartbuild --config smartbuild.json --recursive --update --https --branch master:main
       - run:

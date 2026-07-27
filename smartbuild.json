@@ -1,0 +1,137 @@
+{
+   "ignore" : {
+      "smartmet-SFCGAL-libs" : 1,
+      "smartmet-engine-grid-test" : 1,
+      "smartmet-fonts" : 1,
+      "smartmet-library-newbase-python" : 1,
+      "smartmet-library-spine-plugin-test" : 1,
+      "smartmet-qdtools-test-data" : 1,
+      "smartmet-test-data" : 1,
+      "smartmet-topography-data" : 1,
+      "smartmet-trajectory" : 1,
+      "smartmet-trajectory-formats" : 1,
+      "smartmet-webmon" : 1
+   },
+   "modules" : {
+      "smartmet-cropper" : {
+         "private" : 0,
+         "repo" : "smartmet-cropper"
+      },
+      "smartmet-frontier" : {
+         "private" : 0,
+         "repo" : "smartmet-frontier"
+      },
+      "smartmet-gdal-querydata-driver" : {
+         "private" : 0,
+         "repo" : "smartmet-gdal-querydata-driver"
+      },
+      "smartmet-gdb" : {
+         "private" : 0,
+         "repo" : "smartmet-gdb"
+      },
+      "smartmet-monitor" : {
+         "private" : 0,
+         "repo" : "smartmet-monitor"
+      },
+      "smartmet-plugin-autocomplete" : {
+         "private" : 0,
+         "repo" : "smartmet-plugin-autocomplete"
+      },
+      "smartmet-plugin-avi" : {
+         "private" : 0,
+         "repo" : "smartmet-plugin-avi"
+      },
+      "smartmet-plugin-backend" : {
+         "private" : 0,
+         "repo" : "smartmet-plugin-backend"
+      },
+      "smartmet-plugin-cross_section" : {
+         "private" : 0,
+         "repo" : "smartmet-plugin-cross_section"
+      },
+      "smartmet-plugin-download" : {
+         "private" : 0,
+         "repo" : "smartmet-plugin-download"
+      },
+      "smartmet-plugin-edr" : {
+         "private" : 0,
+         "repo" : "smartmet-plugin-edr"
+      },
+      "smartmet-plugin-frontend" : {
+         "private" : 0,
+         "repo" : "smartmet-plugin-frontend"
+      },
+      "smartmet-plugin-grid-admin" : {
+         "private" : 0,
+         "repo" : "smartmet-plugin-grid-admin"
+      },
+      "smartmet-plugin-grid-gui" : {
+         "private" : 0,
+         "repo" : "smartmet-plugin-grid-gui"
+      },
+      "smartmet-plugin-meta" : {
+         "private" : 0,
+         "repo" : "smartmet-plugin-meta"
+      },
+      "smartmet-plugin-q3" : {
+         "private" : 0,
+         "repo" : "smartmet-plugin-q3"
+      },
+      "smartmet-plugin-textgen" : {
+         "private" : 0,
+         "repo" : "smartmet-plugin-textgen"
+      },
+      "smartmet-plugin-timeseries" : {
+         "private" : 0,
+         "repo" : "smartmet-plugin-timeseries"
+      },
+      "smartmet-plugin-trajectory" : {
+         "private" : 0,
+         "repo" : "smartmet-plugin-trajectory"
+      },
+      "smartmet-plugin-wfs" : {
+         "private" : 0,
+         "repo" : "smartmet-plugin-wfs"
+      },
+      "smartmet-plugin-wms" : {
+         "private" : 0,
+         "repo" : "smartmet-plugin-wms"
+      },
+      "smartmet-press" : {
+         "private" : 0,
+         "repo" : "smartmet-press"
+      },
+      "smartmet-qdcontour" : {
+         "private" : 0,
+         "repo" : "smartmet-qdcontour"
+      },
+      "smartmet-qdcontour2" : {
+         "private" : 0,
+         "repo" : "smartmet-qdcontour2"
+      },
+      "smartmet-qdless" : {
+         "private" : 0,
+         "repo" : "smartmet-qdless"
+      },
+      "smartmet-qdtools" : {
+         "private" : 0,
+         "repo" : "smartmet-qdtools"
+      },
+      "smartmet-server" : {
+         "private" : 0,
+         "repo" : "smartmet-server"
+      },
+      "smartmet-shapetools" : {
+         "private" : 0,
+         "repo" : "smartmet-shapetools"
+      },
+      "smartmet-textgenapps" : {
+         "private" : 0,
+         "repo" : "smartmet-textgenapps"
+      },
+      "smartmet-tools-grid" : {
+         "private" : 0,
+         "repo" : "smartmet-tools-grid"
+      }
+   }
+}
