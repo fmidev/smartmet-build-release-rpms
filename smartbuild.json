@@ -132,6 +132,11 @@
       "smartmet-tools-grid" : {
          "private" : 0,
          "repo" : "smartmet-tools-grid"
+      },
+      "smartmet-server-compare" : {
+         "private" : 0,
+         "repo" : "smartmet-server-compare",
+         "prebuild" : ["autoreconf -fi", "./configure"]
       }
    }
 }
