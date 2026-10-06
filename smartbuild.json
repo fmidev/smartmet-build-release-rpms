@@ -113,6 +113,11 @@
          "private" : 0,
          "repo" : "smartmet-qdless"
       },
+      "smartmet-qdtools-test-data" : {
+         "noarch" : 1,
+         "private" : 0,
+         "repo" : "smartmet-qdtools-test-data"
+      },
       "smartmet-qdtools" : {
          "private" : 0,
          "repo" : "smartmet-qdtools"
