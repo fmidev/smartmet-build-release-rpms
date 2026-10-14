@@ -35,6 +35,7 @@ jobs:
           command: ./archive-files.sh
           when: always
       - store_artifacts:
+          when: always
           path: artifacts
       - run:
           name: Upload RPMs for download.fmi.fi
