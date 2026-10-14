@@ -146,9 +146,15 @@ timeout --signal=KILL $((startup_timeout + 600)) $smartmetd -v -c $work/etc/smar
 pid=$!
 cd $top
 
+# The server starts accepting connections before engines and plugins are initialized
+# (requests get 404 until then), so wait until everything is initialized
+ready() {
+    grep -q "All [0-9]* engines initialized" $log && grep -q "All [0-9]* plugins initialized" $log
+}
+
 ok=true
 t=0
-until grep -q "Launched.*server" $log ; do
+until ready ; do
     if ! kill -0 $pid 2>/dev/null ; then
         echo "Server exited during startup"
         ok=false
@@ -164,7 +170,7 @@ until grep -q "Launched.*server" $log ; do
 done
 
 if $ok ; then
-    echo "Server started in $t seconds"
+    echo "Server started and initialized in $t seconds"
     n=0
     while IFS='|' read url expect ; do
         [ -z "$url" ] && continue
