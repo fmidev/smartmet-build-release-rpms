@@ -1,8 +1,16 @@
 version: 2.1
 jobs:
-  build-rhel8:
+  build:
+    parameters:
+      image:
+        type: string
+      rhel:
+        type: string
+      upload_dirs:
+        type: string
+        default: "beta"
     docker:
-      - image: fmidev/smartmet-cibase-8:latest
+      - image: << parameters.image >>
     resource_class: xlarge
     environment:
       RPM_BUILD_NCPUS: 8
@@ -17,7 +25,7 @@ jobs:
       - run:
           name: Build new release RPMs
           command: |
-             mkdir -p workspace/export/smartmet-open/rhel/8 workspace/log
+             mkdir -p workspace/export/smartmet-open/rhel/<< parameters.rhel >> workspace/log
              smartbuild --config smartbuild.json --builddep --recursive --local --release-rpms --separate-logs --branch master:main
       - run:
           name: Smoke test smartmetd with installed plugins and engines
@@ -32,125 +40,19 @@ jobs:
           name: Upload RPMs for download.fmi.fi
           command: |
              ok=true;
-             if test -d workspace/export/smartmet-open/rhel/8/beta ; then
-                  for rpm in $(find workspace/export/smartmet-open/rhel/8/beta -name '*.rpm'); do
-                      if curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@$rpm https://$RHEL8_BETA_UPLOAD_HOST/api/upload ; then
-                          echo "Uploaded $(basename $rpm) for smartmet-open-beta";
+             for dir in << parameters.upload_dirs >> ; do
+                  path=workspace/export/smartmet-open/rhel/<< parameters.rhel >>/$dir
+                  test -d $path || continue
+                  for rpm in $(find $path -name '*.rpm'); do
+                      if curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@$rpm https://$RHEL<< parameters.rhel >>_BETA_UPLOAD_HOST/api/upload ; then
+                          echo "Uploaded $(basename $rpm) from $dir";
                       else
                           echo "Failed to upload $(basename $rpm)";
                           ok=false
                       fi
                   done
-             fi
+             done
              $ok
-
-  build-rhel9:
-    docker:
-      - image: fmidev/smartmet-cibase-9:latest
-    resource_class: xlarge
-    environment:
-      RPM_BUILD_NCPUS: 8
-    steps:
-      - checkout
-      - run:
-          name: Install smartmet-utils-devel
-          command: sudo yum install -y smartmet-utils-devel
-      - run:
-          name: Create local mirrors of smartmet repos (open sources only)
-          command: smartbuild --create-workspace --config smartbuild.json --recursive --update --https --branch master:main
-      - run:
-          name: Build new release RPMs
-          command: |
-             mkdir -p workspace/export/smartmet-open/rhel/9 workspace/log
-             smartbuild --config smartbuild.json --builddep --recursive --local --release-rpms --separate-logs --branch master:main
-      - run:
-          name: Smoke test smartmetd with installed plugins and engines
-          command: ./smoke-test.sh
-      - run:
-          name: Archive newly built RPM packages and build/install related log files
-          command: ./archive-files.sh
-          when: always
-      - store_artifacts:
-          path: artifacts
-      - run:
-          name: Upload RPMs for download.fmi.fi
-          command: |
-             ok=true;
-             if test -d workspace/export/smartmet-open/rhel/9/debug ; then
-                  for rpm in $(find workspace/export/smartmet-open/rhel/9/debug -name '*.rpm'); do
-                      if curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@$rpm https://$RHEL9_BETA_UPLOAD_HOST/api/upload ; then
-                          echo "Uploaded $(basename $rpm)";
-                      else
-                          echo "Failed to upload $(basename $rpm)";
-                          ok=false
-                      fi
-                  done
-             fi
-             if test -d workspace/export/smartmet-open/rhel/9/x86_64 ; then
-                  for rpm in $(find workspace/export/smartmet-open/rhel/9/x86_64 -name '*.rpm'); do
-                      if curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@$rpm https://$RHEL9_BETA_UPLOAD_HOST/api/upload ; then
-                          echo "Uploaded $(basename $rpm)";
-                      else
-                          echo "Failed to upload $(basename $rpm)";
-                          ok=false
-                      fi
-                  done
-             fi
-             if test -d workspace/export/smartmet-open/rhel/9/beta ; then
-                  for rpm in $(find workspace/export/smartmet-open/rhel/9/beta -name '*.rpm'); do
-                      if curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@$rpm https://$RHEL9_BETA_UPLOAD_HOST/api/upload ; then
-                          echo "Uploaded $(basename $rpm) for smartmet-open-beta";
-                      else
-                          echo "Failed to upload $(basename $rpm)";
-                          ok=false
-                      fi
-                  done
-             fi
-             $ok
-
-  build-rhel10:
-    docker:
-      - image: quay.io/fmi/smartmet-cibase-10:latest
-    resource_class: xlarge
-    environment:
-      RPM_BUILD_NCPUS: 8
-    steps:
-      - checkout
-      - run:
-          name: Install smartmet-utils-devel
-          command: sudo yum install -y smartmet-utils-devel
-      - run:
-          name: Create local mirrors of smartmet repos (open sources only)
-          command: smartbuild --create-workspace --config smartbuild.json --recursive --update --https --branch master:main
-      - run:
-          name: Build new release RPMs
-          command: |
-                 mkdir -p workspace/export/smartmet-open/rhel/10 workspace/log
-                 smartbuild --config smartbuild.json --builddep --recursive --local --release-rpms --separate-logs --branch master:main
-      - run:
-          name: Smoke test smartmetd with installed plugins and engines
-          command: ./smoke-test.sh
-      - run:
-          name: Archive newly built RPM packages and build/install related log files
-          command: ./archive-files.sh
-          when: always
-      - store_artifacts:
-          path: artifacts
-      - run:
-          name: Upload RPMs for download.fmi.fi
-          command: |
-                 ok=true;
-                 if test -d workspace/export/smartmet-open/rhel/10/beta ; then
-                      for rpm in $(find workspace/export/smartmet-open/rhel/10/beta -name '*.rpm'); do
-                          if curl --show-error -u $FMI_RPM_API_USER:$FMI_RPM_API_PASS -F file=@$rpm https://$RHEL10_BETA_UPLOAD_HOST/api/upload ; then
-                              echo "Uploaded $(basename $rpm) for smartmet-open-beta";
-                          else
-                              echo "Failed to upload $(basename $rpm)";
-                              ok=false
-                          fi
-                      done
-                 fi
-                 $ok
 
 workflows:
   build-release-rpms:
@@ -159,6 +61,16 @@ workflows:
           - equal [ scheduled_pipeline, << pipeline.trigger_source >> ]
           - equal [ "release-rpm-build", << pipeline.schedule.name >> ]
     jobs:
-      - build-rhel8
-      - build-rhel9
-      - build-rhel10
+      - build:
+          name: build-rhel8
+          image: fmidev/smartmet-cibase-8:latest
+          rhel: "8"
+      - build:
+          name: build-rhel9
+          image: fmidev/smartmet-cibase-9:latest
+          rhel: "9"
+          upload_dirs: "debug x86_64 beta"
+      - build:
+          name: build-rhel10
+          image: quay.io/fmi/smartmet-cibase-10:latest
+          rhel: "10"
