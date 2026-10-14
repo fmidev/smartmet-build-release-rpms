@@ -20,6 +20,9 @@ jobs:
              mkdir -p workspace/export/smartmet-open/rhel/8 workspace/log
              smartbuild --config smartbuild.json --builddep --recursive --local --release-rpms --separate-logs --branch master:main
       - run:
+          name: Smoke test smartmetd with installed plugins and engines
+          command: ./smoke-test.sh
+      - run:
           name: Archive newly built RPM packages and build/install related log files
           command: ./archive-files.sh
           when: always
@@ -60,6 +63,9 @@ jobs:
           command: |
              mkdir -p workspace/export/smartmet-open/rhel/9 workspace/log
              smartbuild --config smartbuild.json --builddep --recursive --local --release-rpms --separate-logs --branch master:main
+      - run:
+          name: Smoke test smartmetd with installed plugins and engines
+          command: ./smoke-test.sh
       - run:
           name: Archive newly built RPM packages and build/install related log files
           command: ./archive-files.sh
@@ -121,6 +127,9 @@ jobs:
           command: |
                  mkdir -p workspace/export/smartmet-open/rhel/10 workspace/log
                  smartbuild --config smartbuild.json --builddep --recursive --local --release-rpms --separate-logs --branch master:main
+      - run:
+          name: Smoke test smartmetd with installed plugins and engines
+          command: ./smoke-test.sh
       - run:
           name: Archive newly built RPM packages and build/install related log files
           command: ./archive-files.sh
