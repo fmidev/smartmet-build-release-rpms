@@ -25,5 +25,9 @@ if ! test -z "$log_files" ; then
     $cmd
 fi
 
+if test -f workspace/log/smoke-test/smartmetd.log ; then
+    cp workspace/log/smoke-test/smartmetd.log artifacts/${dist}-smartmetd-${timestamp}.log
+fi
+
 ls -l artifacts
 
