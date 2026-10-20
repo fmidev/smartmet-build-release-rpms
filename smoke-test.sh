@@ -7,7 +7,8 @@
 #
 # In addition to the Docker image configuration, also engines used in FMI production
 # servers are enabled: geonames engine with database (smartmet-test-db), grid engine
-# (Valkey with grid test configuration) and satellite engine (smartmet-test-data).
+# (Valkey with grid test configuration, on a Unix socket started by smartmet-grid-test-redis)
+# and satellite engine (smartmet-test-data).
 #
 # Environment:
 #   DOCKER_SMARTMETSERVER_REPO  Git repository of the configuration
@@ -28,6 +29,11 @@ top=$(pwd)
 work=$top/workspace/smoke-test
 dbdir=$work/test-db
 griddir=$work/grid-test
+
+# smartmet-grid-test-redis copies the grid test configuration to $griddir/grid and starts
+# Valkey listening only on a Unix socket in a private directory below /tmp
+export SMARTMET_GRID_TEST_ENV=$griddir/environment.conf
+export SMARTMET_GRID_TEST_DIR=$griddir/grid
 logdir=$top/workspace/log/smoke-test
 log=$logdir/smartmetd.log
 smartmetd=$(command -v smartmetd || echo /usr/sbin/smartmetd)
@@ -116,7 +122,7 @@ port=$(sed -n -e 's/^[[:space:]]*port[[:space:]]*=[[:space:]]*\([0-9]*\).*/\1/p'
 port=${port:-8080}
 
 cleanup() {
-    test -f $griddir/grid/redis/redis-server.pid && kill $(cat $griddir/grid/redis/redis-server.pid)
+    smartmet-grid-test-redis stop
     /usr/share/smartmet/test/db/test-db-ctl.sh $dbdir stop -w >/dev/null
 }
 trap cleanup EXIT
@@ -130,15 +136,11 @@ fi
 
 echo "Starting Valkey for grid engine"
 mkdir -p $griddir
-cp -pr /usr/share/smartmet/test/grid $griddir/
 cat >$griddir/environment.conf <<EOF
-REDIS_CONTENT_SERVER_ADDRESS        = "127.0.0.1"
-REDIS_CONTENT_SERVER_PORT           = 6380
 REDIS_CONTENT_SERVER_TABLE_PREFIX   = "test."
 REDIS_CONTENT_SERVER_DATA_DIR       = "%(DIR)/grid/redis"
 EOF
-smartmet-grid-test-config-creator $griddir/environment.conf $griddir/grid/redis/redis-template.conf $griddir/grid/redis/redis.conf || exit 1
-valkey-server $griddir/grid/redis/redis.conf || exit 1
+smartmet-grid-test-redis start || exit 1
 
 echo "Starting $smartmetd"
 cd $work/etc
