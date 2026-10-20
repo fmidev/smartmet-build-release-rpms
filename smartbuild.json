@@ -130,6 +130,14 @@
          "private" : 0,
          "repo" : "smartmet-shapetools"
       },
+      "smartmet-swagger-ui" : {
+         "private" : 0,
+         "repo" : "smartmet-swagger-ui"
+      },
+      "smartmet-uplot" : {
+         "private" : 0,
+         "repo" : "smartmet-uplot"
+      },
       "smartmet-textgenapps" : {
          "private" : 0,
          "repo" : "smartmet-textgenapps"
