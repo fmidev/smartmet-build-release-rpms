@@ -43,27 +43,39 @@ error_patterns='undefined symbol|cannot open shared object|Segmentation fault|SI
 rm -rf $work $logdir
 mkdir -p $work $logdir
 
-echo "Installing packages"
-sudo yum install -y \
-    smartmet-server \
-    smartmet-plugin-autocomplete \
-    smartmet-plugin-download \
-    smartmet-plugin-edr \
-    smartmet-plugin-q3 \
-    smartmet-plugin-timeseries \
-    smartmet-plugin-wms \
-    smartmet-engine-avi \
-    smartmet-engine-grid \
-    smartmet-engine-observation \
-    smartmet-engine-satellite \
-    smartmet-engine-sputnik \
-    smartmet-library-grid-files-test \
-    smartmet-test-data \
-    smartmet-test-db \
-    valkey \
-    lua-newcairo-q3 \
-    glibc-langpack-en \
-    glibc-langpack-fi || exit 1
+#
+# Only install packages if running on Red Hat-based systems with supported versions
+#
+# For other systems, the required packages must be installed manually
+# Assume that it has been already done
+#
+if test -f "/etc/redhat-release"; then
+case "$(rpm --eval '%{?rhel}')" in
+8|9|10)
+    echo "Installing packages"
+    sudo yum install -y \
+        smartmet-server \
+        smartmet-plugin-autocomplete \
+        smartmet-plugin-download \
+        smartmet-plugin-edr \
+        smartmet-plugin-q3 \
+        smartmet-plugin-timeseries \
+        smartmet-plugin-wms \
+        smartmet-engine-avi \
+        smartmet-engine-grid \
+        smartmet-engine-observation \
+        smartmet-engine-satellite \
+        smartmet-engine-sputnik \
+        smartmet-library-grid-files-test \
+        smartmet-test-data \
+        smartmet-test-db \
+        valkey \
+        lua-newcairo-q3 \
+        glibc-langpack-en \
+        glibc-langpack-fi || exit 1
+        ;;
+    esac
+fi
 
 echo "Fetching configuration from $repo"
 git clone -q --depth 1 $repo $work/docker || exit 1
